@@ -29,3 +29,16 @@ def geocode(address):
     return features[0]["GeoObject"] if features else None
 
 
+# Получаем координаты объекта по его адресу.
+def get_coordinates(address):
+    toponym = geocode(address)
+    if not toponym:
+        return None, None
+
+    # Координаты центра топонима:
+    toponym_coodrinates = toponym["Point"]["pos"]
+    # Широта, преобразованная в плавающее число:
+    toponym_longitude, toponym_lattitude = toponym_coodrinates.split(" ")
+    return float(toponym_longitude), float(toponym_lattitude)
+
+
