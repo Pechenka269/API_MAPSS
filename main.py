@@ -56,6 +56,26 @@ class MyWidget(QMainWindow):
         self.adress_label.setText('')
         self.flag_mail = False
 
+    def get_coord(self):
+        if self.edit_name.text():
+            _object_ = get_ll_span(self.edit_name.text())
+            self.spn_lon, self.spn_lat = list(map(float, _object_[1].split(',')))
+            self.lon, self.lat = list(map(float, _object_[0].split(',')))
+            self.pt_lon, self.pt_lat = list(map(float, _object_[0].split(',')))
+            self.flag_point = True
+            self.get_image_map(flag=False)
+            adress = geocode(self.edit_name.text())['metaDataProperty']['GeocoderMetaData']['Address']
+            _adress_ = "\n".join(adress['formatted'].split(', '))
+            if self.flag_mail:
+                try:
+                    mail_adress = adress['postal_code']
+                    self.adress_label.setText(_adress_+f'\nпочтовый индекс: {mail_adress}')
+                except KeyError:
+                    self.adress_label.setText(_adress_)
+
+            else:
+                self.adress_label.setText(_adress_)
+
 
 def except_hook(cls, exception, traceback):
     sys.__excepthook__(cls, exception, traceback)
