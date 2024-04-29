@@ -69,12 +69,22 @@ class MyWidget(QMainWindow):
             if self.flag_mail:
                 try:
                     mail_adress = adress['postal_code']
-                    self.adress_label.setText(_adress_+f'\nпочтовый индекс: {mail_adress}')
+                    self.adress_label.setText(_adress_ + f'\nпочтовый индекс: {mail_adress}')
                 except KeyError:
                     self.adress_label.setText(_adress_)
 
             else:
                 self.adress_label.setText(_adress_)
+
+    def set_map(self):
+        sender = self.sender().text()
+        if sender == 'карта':
+            self.type_map = 'map'
+        elif sender == 'гибрид':
+            self.type_map = 'sat,skl'
+        elif sender == 'спутник':
+            self.type_map = 'sat'
+        self.get_image_map()
 
 
 def except_hook(cls, exception, traceback):
