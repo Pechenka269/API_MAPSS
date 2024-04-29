@@ -69,13 +69,12 @@ class MyWidget(QMainWindow):
             if self.flag_mail:
                 try:
                     mail_adress = adress['postal_code']
-                    self.adress_label.setText(_adress_+f'\nпочтовый индекс: {mail_adress}')
+                    self.adress_label.setText(_adress_ + f'\nпочтовый индекс: {mail_adress}')
                 except KeyError:
                     self.adress_label.setText(_adress_)
 
             else:
                 self.adress_label.setText(_adress_)
-
 
     def set_map(self):
         sender = self.sender().text()
@@ -105,6 +104,22 @@ class MyWidget(QMainWindow):
         image = QImage('image.png')
         pixmap = QPixmap(image)
         self.map_label.setPixmap(pixmap)
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key.Key_PageUp and self.z < 19:
+            self.z += 1
+        if event.key() == Qt.Key.Key_PageDown and self.z > 0:
+            self.z -= 1
+        if self.z != 0:
+            if event.key() == Qt.Key.Key_Left:
+                self.lon -= 2 / (self.z ** 2)
+            if event.key() == Qt.Key.Key_Right:
+                self.lon += 2 / (self.z ** 2)
+            if event.key() == Qt.Key.Key_Up:
+                self.lat += 2 / (self.z ** 2)
+            if event.key() == Qt.Key.Key_Down:
+                self.lat -= 2 / (self.z ** 2)
+        self.get_image_map()
 
 
 def except_hook(cls, exception, traceback):
