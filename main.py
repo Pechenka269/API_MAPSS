@@ -69,12 +69,13 @@ class MyWidget(QMainWindow):
             if self.flag_mail:
                 try:
                     mail_adress = adress['postal_code']
-                    self.adress_label.setText(_adress_ + f'\nпочтовый индекс: {mail_adress}')
+                    self.adress_label.setText(_adress_+f'\nпочтовый индекс: {mail_adress}')
                 except KeyError:
                     self.adress_label.setText(_adress_)
 
             else:
                 self.adress_label.setText(_adress_)
+
 
     def set_map(self):
         sender = self.sender().text()
@@ -85,6 +86,25 @@ class MyWidget(QMainWindow):
         elif sender == 'спутник':
             self.type_map = 'sat'
         self.get_image_map()
+
+    def get_image_map(self, flag=True):
+        if flag:
+            if self.flag_point:
+                map_request = (f"https://static-maps.yandex.ru/1.x/?ll={self.lon},{self.lat}&"
+                               f"l={self.type_map}&z={self.z}&pt={self.pt_lon},{self.pt_lat},pm2rdl")
+            else:
+                map_request = (f"https://static-maps.yandex.ru/1.x/?ll={self.lon},{self.lat}&"
+                               f"l={self.type_map}&z={self.z}")
+        else:
+            map_request = (f"https://static-maps.yandex.ru/1.x/?ll={self.lon},{self.lat}&"
+                           f"l={self.type_map}&z={self.z}&spn={self.spn_lon},{self.spn_lat}&"
+                           f"pt={self.lon},{self.lat},pm2rdl")
+        response = requests.get(map_request)
+        image = Image.open(BytesIO(response.content))
+        image.save('image.png')
+        image = QImage('image.png')
+        pixmap = QPixmap(image)
+        self.map_label.setPixmap(pixmap)
 
 
 def except_hook(cls, exception, traceback):
